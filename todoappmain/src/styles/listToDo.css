@@ -6,6 +6,7 @@
 }
 .content .task{
     display: flex;
+    align-items: center;
     color: var(--very-dark-grayish-blue);
     border-bottom: 1.25px solid var(--light-grayish-blue);
     gap: 1.1rem;
@@ -15,16 +16,17 @@
 
 
 .content .task article{
-    align-self: flex-end;
     margin-right: 1.2rem;
     opacity: 0;
     transition: 250ms;
+    position: fixed;
+    left: 65%;
 }
 .content .task article:hover{
     opacity: 1;
 }
 
-.content .task img{
+.content .task article img{
     width: 1rem;
     height: 1rem;
 }
