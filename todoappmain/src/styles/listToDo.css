@@ -4,7 +4,7 @@
     width: 100%;
     margin-top: 2rem;
 }
-.content .task{
+.content div{
     display: flex;
     align-items: center;
     color: var(--very-dark-grayish-blue);
@@ -15,18 +15,16 @@
 }
 
 
-.content .task article{
+.content div article{
     margin-right: 1.2rem;
-    opacity: 0;
+    opacity: 1;
     transition: 250ms;
-    position: fixed;
-    left: 65%;
 }
-.content .task article:hover{
+.content div article:hover{
     opacity: 1;
 }
 
-.content .task article img{
+.content div article img{
     width: 1rem;
     height: 1rem;
 }
@@ -52,4 +50,14 @@
 .content footer section p:nth-child(3):hover,
 .content p:nth-child(2):hover{
     color: var(--very-dark-grayish-blue);
+}
+
+/* completed */
+.completed p{
+    color: var(--dark-grayish-blue);
+    text-decoration: line-through;
+}
+.completed label::before{
+    background: linear-gradient(120deg,rgb(87, 221, 255) 15%,  rgb(192, 88, 243) 85%);
+    content: url(../assets/images/icon-check.svg);
 }

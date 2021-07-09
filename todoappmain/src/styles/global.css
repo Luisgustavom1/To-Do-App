@@ -43,9 +43,7 @@ body{
     height: 1rem;
     display: inline-block;
     content: '';
+    text-align: center;
     border: 2px solid var(--light-grayish-blue);
     border-radius: 50%;
-}
-input:checked + label:before{
-    background-color: linear-gradient (hsl(192, 100%, 67%) 70%, hsl(280, 87%, 65%) 30%);
 }
