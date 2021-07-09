@@ -1,0 +1,41 @@
+main{
+    width: 36%;   
+    margin: 0 auto; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.header{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5rem;
+    margin-bottom: 3rem;
+    font-weight: 500;
+    font-size: 2rem;
+    letter-spacing: .6rem;
+}
+img{
+    width: 1.3rem;
+    height: 1.3rem;
+}
+
+.add{
+    background-color: var(--very-light-gray);
+    width: 100%;
+    border-radius: .3rem;
+    
+    display: flex;
+    align-items: center;
+    gap: 1.1rem
+}
+
+#addToDo{
+    color: var(--very-dark-grayish-blue);
+    font-size: .9rem;
+    padding: 1.2rem 0;
+    background-color: var(--very-light-gray)
+}
+::-webkit-input-placeholder{
+    color: var(--dark-grayish-blue);
+}
