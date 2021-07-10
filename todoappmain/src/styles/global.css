@@ -25,11 +25,15 @@ html{
     font-family: 'Josefin Sans', sans-serif;
     color: var(--very-light-gray)
 }
-
 body{
     background: url(../assets/images/bg-desktop-light.jpg) no-repeat;
     background-size: contain;
     background-color: var(--very-light-grayish-blue);
+}
+body.dark{
+    background: url(../assets/images/bg-desktop-dark.jpg) no-repeat;
+    background-size: contain;
+    background-color: hsl(235, 21%, 11%);
 }
 
 .check{

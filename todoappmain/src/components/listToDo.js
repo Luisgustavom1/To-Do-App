@@ -4,10 +4,7 @@ import cross from '../assets/images/icon-cross.svg'
 import '../styles/listToDo.css'
 import '../styles/global.css'
 
-export default function ListToDo({arrayTask}){
-    const [arrayTasks, setArrayTasks] = useState(JSON.parse(localStorage.getItem('tasks')))
-    const [filter, setFilter] = useState(arrayTask)
-    
+export default function ListToDo({arrayTasks, filter, setFilter}){    
     let arrayTasksFilter = filter
 
     function completed(e){
@@ -31,7 +28,13 @@ export default function ListToDo({arrayTask}){
         localStorage.setItem('tasks', JSON.stringify(clearCompleted))
         setFilter(JSON.parse(localStorage.getItem('tasks')))
     }
-    
+
+    async function blue(e){
+        await document.querySelectorAll('.section > *').forEach(p => {p.classList.remove('blue')})
+        console.log(e.target.id)
+        document.getElementById(`${e.target.id}`).classList.add('blue')
+        // console.log(document.querySelectorAll('.section > *').forEach(p => console.log(p)))
+    }
     return(
         <div className='content'>
             {arrayTasksFilter.length > 0 && arrayTasksFilter.map((task) => {
@@ -44,10 +47,21 @@ export default function ListToDo({arrayTask}){
             })}
             <footer>
                 {arrayTasksFilter.length} items Left
-                <section>
-                    <p className='blue' onClick={() => setFilter(arrayTasks)}>All</p>
-                    <p onClick={() => setFilter(arrayTasks.filter((task) => task.completed !== true ? true : false))}>Active</p>
-                    <p onClick={() => setFilter(arrayTasks.filter((task) => task.completed == true ? true : false))}>Completed</p>
+                <section className='section'>
+                    <p id='1' className='blue' onClick={(ev) => {
+                        setFilter(arrayTasks)
+                        blue(ev)
+                    }}>All</p>
+
+                    <p id='2' onClick={(ev) => {
+                        setFilter(arrayTasks.filter((task) => task.completed !== true ? true : false)) 
+                        blue(ev)
+                        }}>Active</p>
+
+                    <p id='3' onClick={(ev) => {
+                        setFilter(arrayTasks.filter((task) => task.completed == true ? true : false))
+                        blue(ev)
+                        }}>Completed</p>
                 </section>
                 <p onClick={() => ClearCompleted()}>Clear Completed</p>
             </footer>

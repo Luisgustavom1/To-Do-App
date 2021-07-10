@@ -29,7 +29,13 @@ img{
     align-items: center;
     gap: 1.1rem
 }
-
+body.dark .add{
+    background-color: hsl(235, 24%, 19%);
+}
+body.dark #addToDo{
+    background-color: hsl(235, 24%, 19%);
+    color: hsl(236, 33%, 92%);
+}
 #addToDo{
     color: var(--very-dark-grayish-blue);
     font-size: .9rem;
