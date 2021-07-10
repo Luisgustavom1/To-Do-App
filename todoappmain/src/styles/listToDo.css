@@ -13,18 +13,16 @@
     padding: .8rem 0;
     font-weight: 600;
 }
-
-
-.content div article{
+.content div aside{
     margin-right: 1.2rem;
     opacity: 1;
     transition: 250ms;
 }
-.content div article:hover{
+.content div aside:hover{
     opacity: 1;
 }
 
-.content div article img{
+.content div aside img{
     width: 1rem;
     height: 1rem;
 }

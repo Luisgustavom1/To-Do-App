@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import darkTheme from '../assets/images/icon-moon.svg'
-import radioChecked from '../assets/images/icon-check.svg'
 import ListToDo from './listToDo'
 
 import '../styles/addToDo.css'
@@ -17,7 +16,7 @@ export default function AddToDo(){
     }
     let id = 1
     
-    let arrayTasks = storage.get()
+    const arrayTasks = [...storage.get()]
     let objectTasks = {}
     function addTask(){
         objectTasks.task = task
@@ -26,7 +25,6 @@ export default function AddToDo(){
 
         arrayTasks.push(objectTasks)
         storage.set(arrayTasks)
-        console.log(arrayTasks)
         document.querySelector('#addToDo').value = ''
     }
     return(
@@ -41,7 +39,7 @@ export default function AddToDo(){
                 <label onClick={() => addTask()}></label>
                 <input type='text' id='addToDo' name='addToDo' placeholder='Create a new todo...' value={task} onChange={(e) => setTask(e.target.value)}></input>
             </div>
-            <ListToDo arrayTasks={arrayTasks}/>
+            <ListToDo arrayTask={arrayTasks}/>
         </>
     )
 }
