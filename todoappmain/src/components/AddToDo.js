@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import moon from '../assets/images/icon-moon.svg'
 import sun from '../assets/images/icon-sun.svg'
 import ListToDo from './listToDo'
@@ -42,17 +42,19 @@ export default function AddToDo(){
     }
     return(
         <>
-            <div className='header'>
-                <p>TODO</p>
-                <img src={darkTheme ? sun : moon} alt='Icon moon for dark theme' onClick={() => setDark()}></img>
-            </div>
-            <div className='add'>
-                {/* <img src={radioChecked}></img> */}
-                <input type='radio' className='check checked' checked='true'></input>
-                <label onClick={() => addTask()}></label>
-                <input type='text' id='addToDo' name='addToDo' placeholder='Create a new todo...' value={task} onChange={(e) => setTask(e.target.value)}></input>
-            </div>
-            <ListToDo arrayTasks={arrayTasks} filter={filter} setFilter={setFilter}/>
+            <main>
+                <div className='header'>
+                    <p>TODO</p>
+                    <img src={darkTheme ? sun : moon} alt='Icon moon for dark theme' onClick={() => setDark()}></img>
+                </div>
+                <div className='add'>
+                    {/* <img src={radioChecked}></img> */}
+                    <input type='radio' className='check checked' checked='true'></input>
+                    <label onClick={() => addTask()}></label>
+                    <input type='text' id='addToDo' name='addToDo' placeholder='Create a new todo...' value={task} onChange={(e) => setTask(e.target.value)}></input>
+                </div>
+                <ListToDo arrayTasks={arrayTasks} filter={filter} setFilter={setFilter}/>
+            </main>
         </>
     )
 }

@@ -1,0 +1,40 @@
+.divLogin{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.divLogin section{
+    text-align: center;
+    margin-top: 10rem;
+}
+.divLogin section h1{
+    margin-bottom: 1.5rem;
+    color: var(--dark-grayish-blue);
+}
+.divLogin section div form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+.divLogin form input{
+    padding: .7rem 4rem;
+    border-radius: 8px;
+    font-size: .9rem;
+}
+.divLogin form input:focus{
+    border: 1px solid hsl(280, 87%, 65%);   
+}
+.divLogin form button {
+    background-color: hsl(280, 87%, 65%);
+    padding: .8rem 0;
+    border-radius: 8px;
+    color: white;
+    font-size: .9em;
+    width: 40%;
+}
+.divLogin form button:hover{
+    filter: brightness(.9)
+}

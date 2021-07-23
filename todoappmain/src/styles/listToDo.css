@@ -25,8 +25,8 @@ body.dark .content div{
     margin-right: 1.2rem;
     opacity: 0;
     transition: 250ms;
-    position: fixed;
-    right: 32%;
+    position: relative;
+    right: -70%;
 }
 .content div aside:hover{
     opacity: 1;
