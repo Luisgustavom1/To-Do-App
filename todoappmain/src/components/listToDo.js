@@ -1,39 +1,29 @@
-import React, { useEffect, useState } from 'react'
-import { GraphQLClient, ClientContext } from 'graphql-hooks'
+import React, { useState, useContext } from 'react'
 
+import UseRemoveTask from '../utils/useRemoveTask'
+import UseUpdateTask from '../utils/useUpdateTask'
+import UseRemoveCompleted from '../utils/useRemoveCompleted'
+import AppContext from '../context/appContext'
 import cross from '../assets/images/icon-cross.svg'
 import '../styles/listToDo.css'
 import '../styles/global.css'
 
-export default function ListToDo({ arrayTasks, filter, setFilter, tasks }){    
-    let arrayTasksFilter = filter
-
-    useEffect(() => {
-        console.log(arrayTasksFilter)  
-        console.log(filter)    
-        console.log(tasks)  
-    },[tasks])
-
-    function completed(e){
-        arrayTasks.map((task) => {
-            return task.id == e ? task.completed = true : console.log('oi')
-        })
-        localStorage.setItem('tasks', JSON.stringify(arrayTasks))
-        setFilter(JSON.parse(localStorage.getItem('tasks')))
+export default function ListToDo({ arrayTasks }){    
+    const { tasks, setToTasks } = useContext(AppContext) 
+    const [filter, setFilter] = useState(tasks)
+    
+    async function completed(e){
+        await UseUpdateTask(e.target.id, 'true')
     }
 
-    function deletar(e){
-        const deletTask = arrayTasks.filter(task => task.id == e.target.id ? false : true) 
-        localStorage.setItem('tasks', JSON.stringify(deletTask))
-        setFilter(JSON.parse(localStorage.getItem('tasks')))
+    async function deletar(e){
+        await UseRemoveTask(e.target.id)
     }
 
-    function ClearCompleted(){
-        const clearCompleted = arrayTasks.filter((task) => 
-            task.completed !== true ? true : false
-        )
-        localStorage.setItem('tasks', JSON.stringify(clearCompleted))
-        setFilter(JSON.parse(localStorage.getItem('tasks')))
+    async function ClearCompleted(){
+        const completed = []
+        tasks.filter(task => task.done == 'true' && true).map(taskCompleted => completed.push(taskCompleted.id))
+        await UseRemoveCompleted(completed)
     }
 
     async function blue(e){
@@ -44,28 +34,28 @@ export default function ListToDo({ arrayTasks, filter, setFilter, tasks }){
     return(
         <div className='content'>
             {tasks.map((task) => {
-            return  <div className={task.isread == true ? 'completed' : ''}>
+            return  <div className={task.done == 'true' ? 'completed' : ''} key={task.id}>
                         <input type='radio' className='check'></input>
-                        <label id={task.id} key={task.id} onClick={(e) => completed(e.target.id)}></label>
-                        <p>{task.job}</p>
+                        <label id={task.id} key={task.id} onClick={(ev) => completed(ev)}></label>
+                        <p>{task.task}</p>
                         <aside><img src={cross} alt='icone de excluir' id={task.id} onClick={(e) => deletar(e)}></img></aside>
                     </div>
             })}
             <footer>
-                {arrayTasksFilter.length} items Left
+                {filter.length} items Left
                 <section className='section'>
                     <p id='1' className='blue' onClick={(ev) => {
-                        setFilter(arrayTasks)
+                        setFilter(tasks)
                         blue(ev)
                     }}>All</p>
 
                     <p id='2' onClick={(ev) => {
-                        setFilter(arrayTasks.filter((task) => task.completed !== true ? true : false)) 
+                        setFilter(tasks.filter((task) => task.done !== 'true' )) 
                         blue(ev)
                         }}>Active</p>
 
                     <p id='3' onClick={(ev) => {
-                        setFilter(arrayTasks.filter((task) => task.completed == true ? true : false))
+                        setFilter(tasks.filter((task) => task.done == 'true' ))
                         blue(ev)
                         }}>Completed</p>
                 </section>

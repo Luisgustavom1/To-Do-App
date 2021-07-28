@@ -1,29 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import moon from '../assets/images/icon-moon.svg'
 import sun from '../assets/images/icon-sun.svg'
 import ListToDo from './listToDo'
 import { toast } from 'react-toastify'
 
 import '../styles/addToDo.css'
+import AppContext from '../context/appContext'
+import UseSetTasks from '../utils/useSetTasks'
 
 export default function AddToDo(){
-    const [task, setTask] = useState('') 
+    const { setToTasks } = useContext(AppContext) 
+    const [task, setTask] = useState('')
     const [darkTheme, setDarkTheme] = useState(false)
 
-    // const storage = {
-    //     get(){
-    //         return JSON.parse(localStorage.getItem('tasks')) || []
-    //     },
-    //     set(value){
-    //         localStorage.setItem('tasks', JSON.stringify(value))
-    //     }
-    // }
-    // let id = 1
-    // const arrayTasks = [...storage.get()]
-
-    const [tasks, setTasks] = useState([])
     const token = process.env.REACT_APP_TOKEN
-    useEffect(() => {
+    
+    const getTasks = () => {
         fetch('https://graphql.datocms.com/',
         {
             method: 'POST',
@@ -33,34 +25,32 @@ export default function AddToDo(){
             'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-            query: '{ allTasks { id, job, isread } }'
+            query: '{ allTasks { id, task, done, createSlug } }'
             })
         }).then(res => res.json())
-            .then(datas => setTasks(datas.data.allTasks))
+            .then(datas => {
+                setToTasks(datas.data.allTasks)
+            })
             .catch(err => console.log(err))
-    }, [])
-    const [filter, setFilter] = useState(tasks)
-    const arrayTasks = tasks
-    
+    }
+    useEffect(() => {
+        return getTasks()
+    },[])
 
-    let objectTasks = {}
-    function addTask(){
+    async function addTask() {
         if(task.length !== 0){
-            objectTasks.task = task
-            objectTasks.isread = false
-    
-            arrayTasks.push(objectTasks)
-            setFilter(arrayTasks)
+            await UseSetTasks(task, 'false', 'luisgustavom1')
+            getTasks()
             setTask('')
             toast.success('Task Adicionada com sucesso');
-        }else{
+        } else {
             toast.error('Preencha todos os campos');
         }
     }
+
     function setDark(){
         document.querySelector('body').classList.toggle('dark')
         setDarkTheme(!darkTheme)
-        console.log(darkTheme)
     }
     return(
         <>
@@ -70,12 +60,11 @@ export default function AddToDo(){
                     <img src={darkTheme ? sun : moon} alt='Icon moon for dark theme' onClick={() => setDark()}></img>
                 </div>
                 <div className='add'>
-                    {/* <img src={radioChecked}></img> */}
                     <input type='radio' className='check checked' checked='true'></input>
                     <label onClick={() => addTask()}></label>
                     <input type='text' id='addToDo' name='addToDo' placeholder='Create a new todo...' value={task} onChange={(e) => setTask(e.target.value)}></input>
                 </div>
-                <ListToDo arrayTasks={arrayTasks} filter={filter} setFilter={setFilter} tasks={tasks}/>
+                <ListToDo/>
             </main>
         </>
     )
