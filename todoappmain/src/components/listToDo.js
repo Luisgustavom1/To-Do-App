@@ -1,11 +1,18 @@
-import React, {useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { GraphQLClient, ClientContext } from 'graphql-hooks'
 
 import cross from '../assets/images/icon-cross.svg'
 import '../styles/listToDo.css'
 import '../styles/global.css'
 
-export default function ListToDo({arrayTasks, filter, setFilter}){    
+export default function ListToDo({ arrayTasks, filter, setFilter, tasks }){    
     let arrayTasksFilter = filter
+
+    useEffect(() => {
+        console.log(arrayTasksFilter)  
+        console.log(filter)    
+        console.log(tasks)  
+    },[tasks])
 
     function completed(e){
         arrayTasks.map((task) => {
@@ -33,15 +40,14 @@ export default function ListToDo({arrayTasks, filter, setFilter}){
         await document.querySelectorAll('.section > *').forEach(p => {p.classList.remove('blue')})
         console.log(e.target.id)
         document.getElementById(`${e.target.id}`).classList.add('blue')
-        // console.log(document.querySelectorAll('.section > *').forEach(p => console.log(p)))
     }
     return(
         <div className='content'>
-            {arrayTasksFilter.length > 0 && arrayTasksFilter.map((task) => {
-            return  <div className={task.completed == true ? 'completed' : ''}>
+            {tasks.map((task) => {
+            return  <div className={task.isread == true ? 'completed' : ''}>
                         <input type='radio' className='check'></input>
                         <label id={task.id} key={task.id} onClick={(e) => completed(e.target.id)}></label>
-                        <p>{task.task}</p>
+                        <p>{task.job}</p>
                         <aside><img src={cross} alt='icone de excluir' id={task.id} onClick={(e) => deletar(e)}></img></aside>
                     </div>
             })}
