@@ -34,7 +34,7 @@ export default function AddToDo(){
             .catch(err => console.log(err))
     }
     useEffect(() => {
-        return getTasks()
+        getTasks()
     },[])
 
     async function addTask() {
@@ -64,7 +64,7 @@ export default function AddToDo(){
                     <label onClick={() => addTask()}></label>
                     <input type='text' id='addToDo' name='addToDo' placeholder='Create a new todo...' value={task} onChange={(e) => setTask(e.target.value)}></input>
                 </div>
-                <ListToDo/>
+                <ListToDo getTasks={getTasks}/>
             </main>
         </>
     )

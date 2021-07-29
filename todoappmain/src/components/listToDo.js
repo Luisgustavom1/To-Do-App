@@ -8,27 +8,29 @@ import cross from '../assets/images/icon-cross.svg'
 import '../styles/listToDo.css'
 import '../styles/global.css'
 
-export default function ListToDo({ arrayTasks }){    
+export default function ListToDo({ getTasks }){    
     const { tasks, setToTasks } = useContext(AppContext) 
     const [filter, setFilter] = useState(tasks)
     
     async function completed(e){
         await UseUpdateTask(e.target.id, 'true')
+        getTasks()
     }
 
     async function deletar(e){
         await UseRemoveTask(e.target.id)
+        getTasks()
     }
 
     async function ClearCompleted(){
         const completed = []
         tasks.filter(task => task.done == 'true' && true).map(taskCompleted => completed.push(taskCompleted.id))
         await UseRemoveCompleted(completed)
+        getTasks()
     }
 
     async function blue(e){
         await document.querySelectorAll('.section > *').forEach(p => {p.classList.remove('blue')})
-        console.log(e.target.id)
         document.getElementById(`${e.target.id}`).classList.add('blue')
     }
     return(
@@ -44,19 +46,19 @@ export default function ListToDo({ arrayTasks }){
             <footer>
                 {filter.length} items Left
                 <section className='section'>
-                    <p id='1' className='blue' onClick={(ev) => {
+                    <p id='1' className='blue' onClick={(e) => {
                         setFilter(tasks)
-                        blue(ev)
+                        blue(e)
                     }}>All</p>
 
-                    <p id='2' onClick={(ev) => {
+                    <p id='2' onClick={(e) => {
                         setFilter(tasks.filter((task) => task.done !== 'true' )) 
-                        blue(ev)
+                        blue(e)
                         }}>Active</p>
 
-                    <p id='3' onClick={(ev) => {
+                    <p id='3' onClick={(e) => {
                         setFilter(tasks.filter((task) => task.done == 'true' ))
-                        blue(ev)
+                        blue(e)
                         }}>Completed</p>
                 </section>
                 <p onClick={() => ClearCompleted()}>Clear Completed</p>
