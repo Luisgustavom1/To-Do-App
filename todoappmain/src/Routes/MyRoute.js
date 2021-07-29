@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Redirect, Route } from "react-router-dom";
 import PropTypes from 'prop-types'
+import AppContext from '../context/appContext';
 
 export default function MyRoute({component: Component, isClosed, ...rest}){
-    const isLoggedIn = false;
-    
+    const { isLoggedIn } = useContext(AppContext)
     if(isClosed && !isLoggedIn){
         return(
             <Redirect 

@@ -6,7 +6,7 @@ import MyRoute from './MyRoute'
 export default function Routes(){
     return(
         <Switch>
-          <MyRoute path='/list' component={AddToDo}/>
+          <MyRoute path='/list' component={AddToDo} isClosed={true}/>
           <MyRoute path='/' exact component={Login}/>
         </Switch>
     )
