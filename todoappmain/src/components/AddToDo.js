@@ -9,7 +9,7 @@ import AppContext from '../context/appContext'
 import UseSetTasks from '../utils/useSetTasks'
 
 export default function AddToDo(){
-    const { setToTasks } = useContext(AppContext) 
+    const { tasks, setToTasks } = useContext(AppContext) 
     const [task, setTask] = useState('')
     const [darkTheme, setDarkTheme] = useState(false)
 
@@ -40,7 +40,7 @@ export default function AddToDo(){
     async function addTask() {
         if(task.length !== 0){
             await UseSetTasks(task, 'false', 'luisgustavom1')
-            getTasks()
+            .then(async res => await setToTasks([res, ...tasks]))
             setTask('')
             toast.success('Task Adicionada com sucesso');
         } else {

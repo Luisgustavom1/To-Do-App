@@ -14,19 +14,43 @@ export default function ListToDo({ getTasks }){
     
     async function completed(e){
         await UseUpdateTask(e.target.id, 'true')
-        getTasks()
+        .then(res => {
+            let index
+            for(var i in tasks){
+                if(tasks[i].id == res.id){
+                    index = i
+                }
+            }
+            const tasksUpdated = [...tasks]
+            tasksUpdated.splice(index, 1, res)
+            setToTasks(tasksUpdated)
+        })
     }
 
     async function deletar(e){
         await UseRemoveTask(e.target.id)
-        getTasks()
+        .then(res => {
+            let index
+            for(var i in tasks){
+                if(tasks[i].id == res.id){
+                    index = i
+                }
+            }
+            tasks.splice(index, 1)
+            const tasksRemovedUpdated = [...tasks]
+            setToTasks(tasksRemovedUpdated)
+        })
     }
 
     async function ClearCompleted(){
         const completed = []
         tasks.filter(task => task.done == 'true' && true).map(taskCompleted => completed.push(taskCompleted.id))
         await UseRemoveCompleted(completed)
-        getTasks()
+        // .then(res => {
+        //     while(){
+
+        //     }
+        // })
     }
 
     async function blue(e){

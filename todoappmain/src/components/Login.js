@@ -5,7 +5,7 @@ import '../styles/login.css'
 import '../styles/global.css'
 import { toast } from 'react-toastify'
 import AppContext from '../context/appContext'
-import GetUser from '../services/getUser'
+import getUsers from '../services/getUser'
 
 export default function Login(){
     const [usuario, setUsuario] = useState('')
@@ -24,10 +24,9 @@ export default function Login(){
         setPassword(data.get('password'))
         // if(usuario === userBaseData && password === passwordBaseData){
         //     setToIsLoggedIn(true)
-        //     history.push('/list')
+            // history.push('/list')
         // }
-        const Datas = await new GetUser(process.env.REACT_APP_TOKEN)
-        console.log(Datas.datas)
+        console.log(getUsers())
     }
     return(
         <div className='divLogin'>
