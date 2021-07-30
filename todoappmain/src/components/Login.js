@@ -5,26 +5,45 @@ import '../styles/login.css'
 import '../styles/global.css'
 import { toast } from 'react-toastify'
 import AppContext from '../context/appContext'
-import GetUsers from '../services/getUser'
 
 export default function Login(){
     const { setToIsLoggedIn } = useContext(AppContext)
+    const [users, setUsers] = useState([])
     const history = useHistory()
 
-    function verification([user, password], usersBD){
+    function verification(user, password, usersBD){
         let validation = false;
-        let userVerified = []
-        for(var c = 0; c < usersBD.length; c++){
-            if(usersBD[c].password == password && usersBD[c].usuario == user){
-                validation = true;
-                userVerified = usersBD.filter(users => {
-                    if(users.usuario == user) return true
-                })
-            }
-            return validation
-        }
+        let userVerified;
 
+        usersBD.map(users => {
+            if(users.usuario === user && users.password === password){
+                validation = true
+                userVerified = usersBD.filter(users => users.usuario === user)
+            }
+            return {validation, userVerified}
+        })
         return {validation, userVerified}
+    }
+
+    function getUsers(){
+        const token = process.env.REACT_APP_TOKEN;
+
+        fetch('https://graphql.datocms.com/',
+        {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+            query: '{ allUsers { usuario, password, createSlug } }'
+            })
+        }).then(async res => {
+            const datas = await res.json();
+            setUsers(datas.data.allUsers);
+        })
+        .catch(err => console.log(err))
     }
 
     const login = async (ev) => {
@@ -39,15 +58,12 @@ export default function Login(){
             return
         }
 
-        const databaseUsers = new GetUsers(process.env.REACT_APP_TOKEN)
-        const users = databaseUsers.getUsers()
-
-        console.log(databaseUsers.datasUsers)
-        // if(verification([user, data], users).validation){
-        //     // setToIsLoggedIn(true)
-        //     // return history.push('/list')  
-        //     console.log('oi')
-        // } 
+        await getUsers()
+        console.log(users)
+        if(verification(user, password, users).validation){
+            setToIsLoggedIn(true)
+            return history.push('/list')  
+        } 
 
         toast.error('user ou senha inválidos')
     }
