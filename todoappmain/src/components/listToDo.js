@@ -44,13 +44,10 @@ export default function ListToDo({ getTasks }){
 
     async function ClearCompleted(){
         const completed = []
-        tasks.filter(task => task.done == 'true' && true).map(taskCompleted => completed.push(taskCompleted.id))
+        tasks.filter(task => task.done == 'true' && true)
+        .map(taskCompleted => completed.push(taskCompleted.id))
         await UseRemoveCompleted(completed)
-        // .then(res => {
-        //     while(){
-
-        //     }
-        // })
+        setToTasks(tasks.filter(task => task.done == 'false' && true))
     }
 
     async function blue(e){
