@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 
 import UseRemoveTask from '../utils/useRemoveTask'
 import UseUpdateTask from '../utils/useUpdateTask'
@@ -10,8 +10,13 @@ import '../styles/global.css'
 
 export default function ListToDo({ getTasks }){    
     const { tasks, setToTasks } = useContext(AppContext) 
-    const [filter, setFilter] = useState(tasks)
+    const [filter, setFilter] = useState([])
     
+    useEffect(() => {
+        setFilter(tasks)
+        console.log(filter)
+    }, [])
+
     async function completed(e){
         await UseUpdateTask(e.target.id, 'true')
         .then(res => {
@@ -68,6 +73,7 @@ export default function ListToDo({ getTasks }){
                 {filter.length} items Left
                 <section className='section'>
                     <p id='1' className='blue' onClick={(e) => {
+                        const saveTasks = [...tasks]
                         setFilter(tasks)
                         blue(e)
                     }}>All</p>
