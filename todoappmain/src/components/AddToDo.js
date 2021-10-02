@@ -1,58 +1,71 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import moon from '../assets/images/icon-moon.svg'
 import sun from '../assets/images/icon-sun.svg'
 import ListToDo from './listToDo'
+import { toast } from 'react-toastify'
 
 import '../styles/addToDo.css'
+import AppContext from '../context/appContext'
+import UseSetTasks from '../utils/useSetTasks'
 
 export default function AddToDo(){
-    const [task, setTask] = useState('') 
+    const { tasks, setToTasks } = useContext(AppContext) 
+    const [task, setTask] = useState('')
     const [darkTheme, setDarkTheme] = useState(false)
-    const storage = {
-        get(){
-            return JSON.parse(localStorage.getItem('tasks')) || []
-        },
-        set(value){
-            localStorage.setItem('tasks', JSON.stringify(value))
-        }
-    }
-    let id = 1
-    const arrayTasks = [...storage.get()]
-    const [filter, setFilter] = useState(arrayTasks)
+
+    const token = process.env.REACT_APP_TOKEN
     
-    let objectTasks = {}
-    function addTask(){
+    const getTasks = () => {
+        fetch('https://graphql.datocms.com/',
+        {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+            query: '{ allTasks { id, task, done, createSlug } }'
+            })
+        }).then(res => res.json())
+            .then(datas => {
+                setToTasks(datas.data.allTasks)
+            })
+            .catch(err => console.log(err))
+    }
+    useEffect(() => {
+        getTasks()
+    },[])
+
+    async function addTask() {
         if(task.length !== 0){
-            objectTasks.task = task
-            objectTasks.id = arrayTasks == '' ? 1 : arrayTasks[arrayTasks.length -1].id + 1
-            objectTasks.completed = false
-    
-            arrayTasks.push(objectTasks)
-            storage.set(arrayTasks)
-            setFilter(arrayTasks)
+            await UseSetTasks(task, 'false', 'luisgustavom1')
+            .then(async res => await setToTasks([res, ...tasks]))
             setTask('')
-        }else{
-            alert('Digite alguma coisa')
+            toast.success('Task Adicionada com sucesso');
+        } else {
+            toast.error('Preencha todos os campos');
         }
     }
+
     function setDark(){
         document.querySelector('body').classList.toggle('dark')
         setDarkTheme(!darkTheme)
-        console.log(darkTheme)
     }
     return(
         <>
-            <div className='header'>
-                <p>TODO</p>
-                <img src={darkTheme ? sun : moon} alt='Icon moon for dark theme' onClick={() => setDark()}></img>
-            </div>
-            <div className='add'>
-                {/* <img src={radioChecked}></img> */}
-                <input type='radio' className='check checked' checked='true'></input>
-                <label onClick={() => addTask()}></label>
-                <input type='text' id='addToDo' name='addToDo' placeholder='Create a new todo...' value={task} onChange={(e) => setTask(e.target.value)}></input>
-            </div>
-            <ListToDo arrayTasks={arrayTasks} filter={filter} setFilter={setFilter}/>
+            <main>
+                <div className='header'>
+                    <p>TODO</p>
+                    <img src={darkTheme ? sun : moon} alt='Icon moon for dark theme' onClick={() => setDark()}></img>
+                </div>
+                <div className='add'>
+                    <input type='radio' className='check checked' checked='true'></input>
+                    <label onClick={() => addTask()}></label>
+                    <input type='text' id='addToDo' name='addToDo' placeholder='Create a new todo...' value={task} onChange={(e) => setTask(e.target.value)}></input>
+                </div>
+                <ListToDo getTasks={getTasks}/>
+            </main>
         </>
     )
 }

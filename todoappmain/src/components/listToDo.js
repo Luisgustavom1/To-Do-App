@@ -1,66 +1,91 @@
-import React, {useEffect, useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 
+import UseRemoveTask from '../utils/useRemoveTask'
+import UseUpdateTask from '../utils/useUpdateTask'
+import UseRemoveCompleted from '../utils/useRemoveCompleted'
+import AppContext from '../context/appContext'
 import cross from '../assets/images/icon-cross.svg'
 import '../styles/listToDo.css'
 import '../styles/global.css'
 
-export default function ListToDo({arrayTasks, filter, setFilter}){    
-    let arrayTasksFilter = filter
+export default function ListToDo({ getTasks }){    
+    const { tasks, setToTasks } = useContext(AppContext) 
+    const [filter, setFilter] = useState([])
+    
+    useEffect(() => {
+        setFilter(tasks)
+        console.log(filter)
+    }, [])
 
-    function completed(e){
-        arrayTasks.map((task) => {
-            return task.id == e ? task.completed = true : console.log('oi')
+    async function completed(e){
+        await UseUpdateTask(e.target.id, 'true')
+        .then(res => {
+            let index
+            for(var i in tasks){
+                if(tasks[i].id == res.id){
+                    index = i
+                }
+            }
+            const tasksUpdated = [...tasks]
+            tasksUpdated.splice(index, 1, res)
+            setToTasks(tasksUpdated)
         })
-        localStorage.setItem('tasks', JSON.stringify(arrayTasks))
-        setFilter(JSON.parse(localStorage.getItem('tasks')))
     }
 
-    function deletar(e){
-        const deletTask = arrayTasks.filter(task => task.id == e.target.id ? false : true) 
-        localStorage.setItem('tasks', JSON.stringify(deletTask))
-        setFilter(JSON.parse(localStorage.getItem('tasks')))
+    async function deletar(e){
+        await UseRemoveTask(e.target.id)
+        .then(res => {
+            let index
+            for(var i in tasks){
+                if(tasks[i].id == res.id){
+                    index = i
+                }
+            }
+            tasks.splice(index, 1)
+            const tasksRemovedUpdated = [...tasks]
+            setToTasks(tasksRemovedUpdated)
+        })
     }
 
-    function ClearCompleted(){
-        const clearCompleted = arrayTasks.filter((task) => 
-            task.completed !== true ? true : false
-        )
-        localStorage.setItem('tasks', JSON.stringify(clearCompleted))
-        setFilter(JSON.parse(localStorage.getItem('tasks')))
+    async function ClearCompleted(){
+        const completed = []
+        tasks.filter(task => task.done == 'true' && true)
+        .map(taskCompleted => completed.push(taskCompleted.id))
+        await UseRemoveCompleted(completed)
+        setToTasks(tasks.filter(task => task.done == 'false' && true))
     }
 
     async function blue(e){
         await document.querySelectorAll('.section > *').forEach(p => {p.classList.remove('blue')})
-        console.log(e.target.id)
         document.getElementById(`${e.target.id}`).classList.add('blue')
-        // console.log(document.querySelectorAll('.section > *').forEach(p => console.log(p)))
     }
     return(
         <div className='content'>
-            {arrayTasksFilter.length > 0 && arrayTasksFilter.map((task) => {
-            return  <div className={task.completed == true ? 'completed' : ''}>
+            {tasks.map((task) => {
+            return  <div className={task.done == 'true' ? 'completed' : ''} key={task.id}>
                         <input type='radio' className='check'></input>
-                        <label id={task.id} key={task.id} onClick={(e) => completed(e.target.id)}></label>
+                        <label id={task.id} key={task.id} onClick={(ev) => completed(ev)}></label>
                         <p>{task.task}</p>
                         <aside><img src={cross} alt='icone de excluir' id={task.id} onClick={(e) => deletar(e)}></img></aside>
                     </div>
             })}
             <footer>
-                {arrayTasksFilter.length} items Left
+                {filter.length} items Left
                 <section className='section'>
-                    <p id='1' className='blue' onClick={(ev) => {
-                        setFilter(arrayTasks)
-                        blue(ev)
+                    <p id='1' className='blue' onClick={(e) => {
+                        const saveTasks = [...tasks]
+                        setFilter(tasks)
+                        blue(e)
                     }}>All</p>
 
-                    <p id='2' onClick={(ev) => {
-                        setFilter(arrayTasks.filter((task) => task.completed !== true ? true : false)) 
-                        blue(ev)
+                    <p id='2' onClick={(e) => {
+                        setFilter(tasks.filter((task) => task.done !== 'true' )) 
+                        blue(e)
                         }}>Active</p>
 
-                    <p id='3' onClick={(ev) => {
-                        setFilter(arrayTasks.filter((task) => task.completed == true ? true : false))
-                        blue(ev)
+                    <p id='3' onClick={(e) => {
+                        setFilter(tasks.filter((task) => task.done == 'true' ))
+                        blue(e)
                         }}>Completed</p>
                 </section>
                 <p onClick={() => ClearCompleted()}>Clear Completed</p>
